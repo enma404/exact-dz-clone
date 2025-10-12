@@ -1,15 +1,22 @@
 import { BookOpen } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 interface LevelCardProps {
+  id: string;
   title: string;
   count: number;
   gradient?: string;
 }
 
-const LevelCard = ({ title, count, gradient }: LevelCardProps) => {
+const LevelCard = ({ id, title, count, gradient }: LevelCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <Card className="relative overflow-hidden bg-[hsl(var(--card-bg))]/50 backdrop-blur-sm border-primary/20 hover:border-primary/50 transition-all duration-300 card-shimmer group cursor-pointer">
+    <Card 
+      className="relative overflow-hidden bg-[hsl(var(--card-bg))]/50 backdrop-blur-sm border-primary/20 hover:border-primary/50 transition-all duration-300 card-shimmer group cursor-pointer"
+      onClick={() => navigate(`/level/${id}`)}
+    >
       <div className="p-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="bg-primary/20 p-3 rounded-xl group-hover:bg-primary/30 transition-colors">

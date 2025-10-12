@@ -2,15 +2,24 @@ import { Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+
   const navItems = [
     { title: "الرئيسية", href: "/" },
-    { title: "التعليم الثانوي", href: "#secondary" },
-    { title: "التعليم المتوسط", href: "#middle" },
-    { title: "التعليم الابتدائي", href: "#primary" },
-    { title: "المواضيع", href: "#subjects" },
+    { title: "البحث", href: "/search" },
   ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
 
   return (
     <header className="gradient-header sticky top-0 z-50 shadow-lg">
@@ -39,7 +48,7 @@ const Header = () => {
           </Sheet>
 
           {/* Logo */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
             <div className="bg-white p-2 rounded-lg shadow-md">
               <div className="w-8 h-8 flex items-center justify-center">
                 <svg viewBox="0 0 24 24" className="w-full h-full">
@@ -75,14 +84,16 @@ const Header = () => {
           </nav>
 
           {/* Search */}
-          <div className="hidden md:flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[200px]">
+          <form onSubmit={handleSearch} className="hidden md:flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[200px]">
             <Search className="h-5 w-5 text-white/70" />
             <Input
               type="search"
               placeholder="ابحث..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="border-0 bg-transparent text-white placeholder:text-white/60 focus-visible:ring-0 focus-visible:ring-offset-0"
             />
-          </div>
+          </form>
         </div>
       </div>
     </header>

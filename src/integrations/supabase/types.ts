@@ -14,16 +14,157 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      documents: {
+        Row: {
+          created_at: string | null
+          downloads_count: number | null
+          file_size: number | null
+          file_type: Database["public"]["Enums"]["file_type"]
+          file_url: string | null
+          id: string
+          level_id: string | null
+          subject_id: string | null
+          term: number | null
+          title: string
+          title_ar: string
+          views_count: number | null
+          year: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          downloads_count?: number | null
+          file_size?: number | null
+          file_type?: Database["public"]["Enums"]["file_type"]
+          file_url?: string | null
+          id?: string
+          level_id?: string | null
+          subject_id?: string | null
+          term?: number | null
+          title: string
+          title_ar: string
+          views_count?: number | null
+          year?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          downloads_count?: number | null
+          file_size?: number | null
+          file_type?: Database["public"]["Enums"]["file_type"]
+          file_url?: string | null
+          id?: string
+          level_id?: string | null
+          subject_id?: string | null
+          term?: number | null
+          title?: string
+          title_ar?: string
+          views_count?: number | null
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      levels: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          display_order: number
+          id: string
+          level_type: Database["public"]["Enums"]["education_level"]
+          name: string
+          name_ar: string
+          year_number: number
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number
+          id?: string
+          level_type: Database["public"]["Enums"]["education_level"]
+          name: string
+          name_ar: string
+          year_number: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number
+          id?: string
+          level_type?: Database["public"]["Enums"]["education_level"]
+          name?: string
+          name_ar?: string
+          year_number?: number
+        }
+        Relationships: []
+      }
+      subjects: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon_name: string | null
+          id: string
+          level_id: string | null
+          name: string
+          name_ar: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon_name?: string | null
+          id?: string
+          level_id?: string | null
+          name: string
+          name_ar: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon_name?: string | null
+          id?: string
+          level_id?: string | null
+          name?: string
+          name_ar?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subjects_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_downloads: {
+        Args: { document_id: string }
+        Returns: undefined
+      }
+      increment_views: {
+        Args: { document_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      education_level: "primary" | "middle" | "secondary"
+      file_type: "exam" | "homework" | "summary" | "exercise"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +291,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      education_level: ["primary", "middle", "secondary"],
+      file_type: ["exam", "homework", "summary", "exercise"],
+    },
   },
 } as const
