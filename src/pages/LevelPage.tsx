@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BackButton from "@/components/BackButton";
 import { Card } from "@/components/ui/card";
 import { Loader2, BookOpen, FileText } from "lucide-react";
 import * as Icons from "lucide-react";
@@ -72,14 +73,17 @@ const LevelPage = () => {
       <main>
         {/* Hero Section */}
         <section className="bg-[hsl(var(--darker-bg))] py-12 border-b border-border">
-          <div className="container mx-auto px-4 text-center">
-            <div className="max-w-4xl mx-auto space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                {level?.name_ar}
-              </h1>
-              <p className="text-muted-foreground text-lg">
-                تصفح جميع المواد الدراسية والوثائق المتاحة
-              </p>
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <BackButton to="/" />
+              <div className="text-center space-y-4">
+                <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+                  {level?.name_ar}
+                </h1>
+                <p className="text-muted-foreground text-lg">
+                  تصفح جميع المواد الدراسية والوثائق المتاحة
+                </p>
+              </div>
             </div>
           </div>
         </section>

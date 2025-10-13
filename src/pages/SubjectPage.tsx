@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BackButton from "@/components/BackButton";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -91,16 +92,19 @@ const SubjectPage = () => {
       <main>
         {/* Hero Section */}
         <section className="bg-[hsl(var(--darker-bg))] py-12 border-b border-border">
-          <div className="container mx-auto px-4 text-center">
-            <div className="max-w-4xl mx-auto space-y-4">
-              <div className="flex items-center justify-center gap-2 text-muted-foreground mb-4">
-                <span>{subject?.level?.name_ar}</span>
-                <span>•</span>
-                <span>{documents?.length || 0} وثيقة</span>
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <BackButton />
+              <div className="text-center space-y-4">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <span>{subject?.level?.name_ar}</span>
+                  <span>•</span>
+                  <span>{documents?.length || 0} وثيقة</span>
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+                  {subject?.name_ar}
+                </h1>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                {subject?.name_ar}
-              </h1>
             </div>
           </div>
         </section>
