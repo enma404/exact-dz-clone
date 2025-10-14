@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      branches: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          icon_name: string | null
+          id: string
+          level_id: string | null
+          name: string
+          name_ar: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon_name?: string | null
+          id?: string
+          level_id?: string | null
+          name: string
+          name_ar: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon_name?: string | null
+          id?: string
+          level_id?: string | null
+          name?: string
+          name_ar?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "branches_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           created_at: string | null
@@ -112,6 +153,7 @@ export type Database = {
       }
       subjects: {
         Row: {
+          branch_id: string | null
           created_at: string | null
           description: string | null
           icon_name: string | null
@@ -121,6 +163,7 @@ export type Database = {
           name_ar: string
         }
         Insert: {
+          branch_id?: string | null
           created_at?: string | null
           description?: string | null
           icon_name?: string | null
@@ -130,6 +173,7 @@ export type Database = {
           name_ar: string
         }
         Update: {
+          branch_id?: string | null
           created_at?: string | null
           description?: string | null
           icon_name?: string | null
@@ -139,6 +183,13 @@ export type Database = {
           name_ar?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "subjects_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "subjects_level_id_fkey"
             columns: ["level_id"]

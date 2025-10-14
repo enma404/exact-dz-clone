@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import LevelPage from "./pages/LevelPage";
+import BranchPage from "./pages/BranchPage";
 import SubjectPage from "./pages/SubjectPage";
 import SearchPage from "./pages/SearchPage";
 import NotFound from "./pages/NotFound";
@@ -20,6 +21,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/level/:levelId" element={<LevelPage />} />
+          <Route path="/branch/:id" element={<BranchPage />} />
           <Route path="/subject/:subjectId" element={<SubjectPage />} />
           <Route path="/search" element={<SearchPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
