@@ -1,12 +1,21 @@
-import { Menu, Search } from "lucide-react";
+import { Menu, Search, LogIn, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const Header = () => {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
 
   const navItems = [
@@ -18,6 +27,16 @@ const Header = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast.error("حدث خطأ أثناء تسجيل الخروج");
+    } else {
+      toast.success("تم تسجيل الخروج بنجاح");
+      navigate("/");
     }
   };
 
@@ -84,16 +103,44 @@ const Header = () => {
           </nav>
 
           {/* Search */}
-          <form onSubmit={handleSearch} className="hidden md:flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[200px]">
-            <Search className="h-5 w-5 text-white/70" />
-            <Input
-              type="search"
-              placeholder="ابحث..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="border-0 bg-transparent text-white placeholder:text-white/60 focus-visible:ring-0 focus-visible:ring-offset-0"
-            />
-          </form>
+          <div className="flex items-center gap-2">
+            <form onSubmit={handleSearch} className="hidden md:flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[200px]">
+              <Search className="h-5 w-5 text-white/70" />
+              <Input
+                type="search"
+                placeholder="ابحث..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="border-0 bg-transparent text-white placeholder:text-white/60 focus-visible:ring-0 focus-visible:ring-offset-0"
+              />
+            </form>
+
+            {/* Auth Button */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="h-4 w-4 ml-2" />
+                    تسجيل الخروج
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button 
+                variant="ghost"
+                onClick={() => navigate("/auth")}
+                className="text-white hover:bg-white/20 gap-2"
+              >
+                <LogIn className="h-4 w-4" />
+                <span className="hidden lg:inline">تسجيل الدخول</span>
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </header>
