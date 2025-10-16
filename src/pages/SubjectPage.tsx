@@ -7,11 +7,13 @@ import BackButton from "@/components/BackButton";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Download, Eye, FileText } from "lucide-react";
+import { Loader2, Download, Eye, FileText, BookOpen, FileCheck, ClipboardList, BookMarked } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 
 const SubjectPage = () => {
   const { subjectId } = useParams();
+  const [selectedFileType, setSelectedFileType] = useState<string | null>(null);
 
   const { data: subject, isLoading: subjectLoading } = useQuery({
     queryKey: ["subject", subjectId],
@@ -31,18 +33,31 @@ const SubjectPage = () => {
   });
 
   const { data: documents, isLoading: documentsLoading } = useQuery({
-    queryKey: ["documents", subjectId],
+    queryKey: ["documents", subjectId, selectedFileType],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("documents")
         .select("*")
         .eq("subject_id", subjectId)
         .order("created_at", { ascending: false });
 
+      if (selectedFileType) {
+        query = query.eq("file_type", selectedFileType as any);
+      }
+
+      const { data, error } = await query;
+
       if (error) throw error;
       return data;
     },
   });
+
+  const fileTypes = [
+    { id: "exercise", label: "تمارين", icon: BookOpen, count: 0 },
+    { id: "homework", label: "فروض", icon: ClipboardList, count: 0 },
+    { id: "exam", label: "اختبارات", icon: FileCheck, count: 0 },
+    { id: "summary", label: "ملخصات", icon: BookMarked, count: 0 },
+  ];
 
   const handleDownload = async (documentId: string) => {
     try {
@@ -109,10 +124,76 @@ const SubjectPage = () => {
           </div>
         </section>
 
+        {/* File Type Filter */}
+        <section className="py-8 border-b border-border">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
+                اختر نوع المحتوى
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {fileTypes.map((type) => {
+                  const Icon = type.icon;
+                  const isSelected = selectedFileType === type.id;
+                  return (
+                    <Card
+                      key={type.id}
+                      className={`relative overflow-hidden cursor-pointer transition-all duration-300 ${
+                        isSelected
+                          ? "bg-primary/20 border-primary"
+                          : "bg-[hsl(var(--card-bg))]/30 border-primary/20 hover:border-primary/50"
+                      }`}
+                      onClick={() => setSelectedFileType(isSelected ? null : type.id)}
+                    >
+                      <div className="p-6">
+                        <div className="flex flex-col items-center text-center space-y-3">
+                          <div className={`p-4 rounded-xl transition-all duration-300 ${
+                            isSelected ? "bg-primary/30" : "bg-primary/20"
+                          }`}>
+                            <Icon className="h-8 w-8 text-primary" />
+                          </div>
+                          <h3 className={`text-lg font-bold transition-colors ${
+                            isSelected ? "text-primary" : "text-foreground"
+                          }`}>
+                            {type.label}
+                          </h3>
+                        </div>
+                      </div>
+                      {isSelected && (
+                        <div className="absolute top-2 left-2">
+                          <div className="bg-primary rounded-full p-1">
+                            <FileCheck className="h-4 w-4 text-primary-foreground" />
+                          </div>
+                        </div>
+                      )}
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Documents List */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto space-y-4">
+            <div className="max-w-5xl mx-auto">
+              {selectedFileType && (
+                <div className="mb-6 flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-foreground">
+                    {fileTypes.find(t => t.id === selectedFileType)?.label}
+                  </h3>
+                  <Button
+                    variant="outline"
+                    onClick={() => setSelectedFileType(null)}
+                    className="text-sm"
+                  >
+                    عرض الكل
+                  </Button>
+                </div>
+              )}
+              
+              <div className="space-y-4">
               {documents?.map((doc) => (
                 <Card
                   key={doc.id}
@@ -161,12 +242,20 @@ const SubjectPage = () => {
                 </Card>
               ))}
 
-              {documents?.length === 0 && (
-                <div className="text-center py-12">
-                  <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-xl text-muted-foreground">لا توجد وثائق متاحة حاليًا</p>
-                </div>
-              )}
+                {documents?.length === 0 && (
+                  <div className="text-center py-12">
+                    <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-xl text-muted-foreground">
+                      {selectedFileType 
+                        ? "لا توجد وثائق من هذا النوع حاليًا"
+                        : "لا توجد وثائق متاحة حاليًا"}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      سيتم إضافة المحتوى قريبًا
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </section>
