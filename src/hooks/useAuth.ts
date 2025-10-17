@@ -65,6 +65,38 @@ export const useAuth = () => {
     return { error };
   };
 
+  const signInWithFacebook = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'facebook',
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      }
+    });
+    
+    return { error };
+  };
+
+  const signInWithOTP = async (email: string) => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`,
+      }
+    });
+    
+    return { error };
+  };
+
+  const verifyOTP = async (email: string, token: string) => {
+    const { error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: 'email'
+    });
+    
+    return { error };
+  };
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     return { error };
@@ -77,6 +109,9 @@ export const useAuth = () => {
     signUp,
     signIn,
     signInWithGoogle,
+    signInWithFacebook,
+    signInWithOTP,
+    verifyOTP,
     signOut,
   };
 };
