@@ -50,27 +50,31 @@ const StatsSection = () => {
   ];
 
   return (
-    <section className="py-12 bg-[hsl(var(--darker-bg))] border-y border-border">
+    <section className="py-16 bg-[hsl(var(--darker-bg))] border-y border-border">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-white mb-8 text-center">إحصائيات المنصة</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center animate-fade-in-up">
+          إحصائيات <span className="text-gradient">المنصة</span>
+        </h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
           {statCards.map((stat, index) => {
             const Icon = stat.icon;
             return (
               <Card
                 key={index}
-                className="relative overflow-hidden bg-[hsl(var(--card-bg))]/30 backdrop-blur-sm border-primary/20 p-6 text-center group hover:border-primary/50 transition-all duration-300"
+                className="relative overflow-hidden glass-effect border-primary/20 p-6 md:p-8 text-center group hover:border-primary/50 transition-all duration-300 hover-lift animate-scale-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="relative z-10">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/20 rounded-xl mb-3 group-hover:bg-primary/30 transition-colors">
-                    <Icon className="h-6 w-6 text-primary" />
+                  <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-primary/20 rounded-2xl mb-4 group-hover:bg-primary/30 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                    <Icon className="h-7 w-7 md:h-8 md:w-8 text-primary" />
                   </div>
-                  <div className="text-3xl font-bold text-white mb-2">
+                  <div className="text-3xl md:text-4xl font-bold text-gradient mb-3">
                     {stat.value.toLocaleString("ar-DZ")}
                   </div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="text-sm md:text-base text-muted-foreground font-medium">{stat.label}</div>
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all duration-500"></div>
               </Card>
             );
           })}

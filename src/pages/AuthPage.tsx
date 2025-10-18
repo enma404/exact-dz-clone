@@ -119,35 +119,46 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-primary/5 to-background">
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/10 to-background">
+        <div className="absolute top-20 left-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-glow"></div>
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: "1s" }}></div>
+      </div>
+
       <Header />
       
-      <main className="flex-1 flex items-center justify-center p-4 mt-20">
-        <div className="w-full max-w-md relative">
+      <main className="flex-1 flex items-center justify-center p-4 mt-20 relative z-10">
+        <div className="w-full max-w-md relative animate-scale-in">
           <Button
             variant="ghost"
             size="sm"
             onClick={handleSkip}
-            className="absolute -top-12 left-0 text-muted-foreground hover:text-foreground"
+            className="absolute -top-14 left-0 text-muted-foreground hover:text-foreground transition-all hover:scale-105"
           >
             <X className="h-4 w-4 ml-2" />
             تخطي
           </Button>
 
-          <Card className="p-8 bg-card/50 backdrop-blur-sm border-primary/20">
-            <div className="text-center mb-6">
-              <h1 className="text-3xl font-bold text-foreground mb-2">
+          <Card className="p-8 md:p-10 glass-effect border-primary/30 hover:border-primary/50 transition-all duration-500 shadow-2xl">
+            {/* Header */}
+            <div className="text-center mb-8 space-y-2">
+              <h1 className="text-3xl md:text-4xl font-extrabold text-gradient animate-fade-in-down">
                 مرحباً بك
               </h1>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-base md:text-lg animate-fade-in" style={{ animationDelay: "0.1s" }}>
                 سجل دخولك أو أنشئ حساباً جديداً
               </p>
+              <div className="flex justify-center gap-2 pt-2">
+                <div className="w-8 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"></div>
+                <div className="w-8 h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent rounded-full"></div>
+              </div>
             </div>
 
             <Tabs defaultValue="login" className="w-full" dir="rtl">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login">تسجيل الدخول</TabsTrigger>
-                <TabsTrigger value="signup">إنشاء حساب</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-8 p-1 glass-effect">
+                <TabsTrigger value="login" className="data-[state=active]:bg-primary data-[state=active]:text-white transition-all">تسجيل الدخول</TabsTrigger>
+                <TabsTrigger value="signup" className="data-[state=active]:bg-primary data-[state=active]:text-white transition-all">إنشاء حساب</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
@@ -187,7 +198,7 @@ const AuthPage = () => {
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full" disabled={loading}>
+                    <Button type="submit" className="w-full hover-lift glow-effect transition-all" disabled={loading}>
                       <LogIn className="h-4 w-4 ml-2" />
                       {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
                     </Button>
@@ -195,7 +206,7 @@ const AuthPage = () => {
                     <Button
                       type="button"
                       variant="link"
-                      className="w-full text-sm text-primary"
+                      className="w-full text-sm text-primary hover:text-primary/80 transition-all"
                       onClick={() => setUseOTP(true)}
                     >
                       <Shield className="h-4 w-4 ml-2" />
@@ -224,7 +235,7 @@ const AuthPage = () => {
                       </p>
                     </div>
 
-                    <Button type="submit" className="w-full" disabled={loading}>
+                    <Button type="submit" className="w-full hover-lift glow-effect transition-all" disabled={loading}>
                       <Shield className="h-4 w-4 ml-2" />
                       {loading ? "جاري الإرسال..." : "إرسال رمز التحقق"}
                     </Button>
@@ -264,7 +275,7 @@ const AuthPage = () => {
                       </p>
                     </div>
 
-                    <Button type="submit" className="w-full" disabled={loading}>
+                    <Button type="submit" className="w-full hover-lift glow-effect transition-all" disabled={loading}>
                       <LogIn className="h-4 w-4 ml-2" />
                       {loading ? "جاري التحقق..." : "تأكيد"}
                     </Button>
