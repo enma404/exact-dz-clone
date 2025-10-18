@@ -89,9 +89,9 @@ const AuthPage = () => {
     const { error } = await signInWithOTP(loginEmail);
 
     if (error) {
-      toast.error(error.message);
+      toast.error("حدث خطأ أثناء إرسال رمز التحقق. يرجى المحاولة مرة أخرى.");
     } else {
-      toast.success("تم إرسال رمز التحقق إلى بريدك الإلكتروني!");
+      toast.success("✅ تم إرسال رمز التحقق المكون من 6 أرقام إلى بريدك الإلكتروني!");
       setOtpSent(true);
     }
 
@@ -105,7 +105,7 @@ const AuthPage = () => {
     const { error } = await verifyOTP(loginEmail, otpCode);
 
     if (error) {
-      toast.error(error.message);
+      toast.error(error.message || "رمز التحقق غير صحيح. يرجى التحقق من بريدك الإلكتروني والمحاولة مرة أخرى.");
     } else {
       toast.success("تم تسجيل الدخول بنجاح!");
       navigate("/");
@@ -220,7 +220,7 @@ const AuthPage = () => {
                         />
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        سيتم إرسال رمز التحقق إلى بريدك الإلكتروني
+                        سيصلك رمز مكون من 6 أرقام عبر البريد الإلكتروني
                       </p>
                     </div>
 
@@ -260,7 +260,7 @@ const AuthPage = () => {
                         />
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        تم إرسال رمز التحقق إلى {loginEmail}
+                        تم إرسال رمز مكون من 6 أرقام إلى {loginEmail}. يرجى التحقق من بريدك الإلكتروني.
                       </p>
                     </div>
 

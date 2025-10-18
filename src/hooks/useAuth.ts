@@ -77,24 +77,77 @@ export const useAuth = () => {
   };
 
   const signInWithOTP = async (email: string) => {
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/`,
+    try {
+      // Generate 6-digit OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // Store OTP in session storage with timestamp
+      sessionStorage.setItem('otp_data', JSON.stringify({
+        email,
+        otp,
+        timestamp: Date.now()
+      }));
+      
+      // Send OTP via edge function
+      const { error: functionError } = await supabase.functions.invoke('send-otp-email', {
+        body: { email, otp }
+      });
+      
+      if (functionError) {
+        console.error('Error sending OTP:', functionError);
+        return { error: functionError };
       }
-    });
-    
-    return { error };
+      
+      return { error: null };
+    } catch (error: any) {
+      console.error('Error in signInWithOTP:', error);
+      return { error };
+    }
   };
 
   const verifyOTP = async (email: string, token: string) => {
-    const { error } = await supabase.auth.verifyOtp({
-      email,
-      token,
-      type: 'email'
-    });
-    
-    return { error };
+    try {
+      // Get stored OTP data
+      const otpDataString = sessionStorage.getItem('otp_data');
+      if (!otpDataString) {
+        return { error: { message: 'لم يتم العثور على رمز التحقق. يرجى طلب رمز جديد.' } };
+      }
+      
+      const otpData = JSON.parse(otpDataString);
+      
+      // Check if OTP expired (5 minutes)
+      const fiveMinutes = 5 * 60 * 1000;
+      if (Date.now() - otpData.timestamp > fiveMinutes) {
+        sessionStorage.removeItem('otp_data');
+        return { error: { message: 'انتهت صلاحية رمز التحقق. يرجى طلب رمز جديد.' } };
+      }
+      
+      // Verify OTP matches
+      if (otpData.email !== email || otpData.otp !== token) {
+        return { error: { message: 'رمز التحقق غير صحيح. يرجى المحاولة مرة أخرى.' } };
+      }
+      
+      // Sign up or sign in the user
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: true,
+          emailRedirectTo: `${window.location.origin}/`,
+        }
+      });
+      
+      if (error) {
+        return { error };
+      }
+      
+      // Clear OTP data
+      sessionStorage.removeItem('otp_data');
+      
+      return { error: null };
+    } catch (error: any) {
+      console.error('Error in verifyOTP:', error);
+      return { error };
+    }
   };
 
   const signOut = async () => {
